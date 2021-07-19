@@ -83,10 +83,9 @@ namespace TextFileLogger
             string timestamp = System.String.Format(System.Globalization.CultureInfo.CurrentCulture,
                 "{0:yyyy.MM.dd HH:mm:ss,ffffff}", new object[] { treeEvent.Timestamp });
             StringBuilder bigMessage = new StringBuilder(timestamp + " Event: " + treeEvent.Name);
-            string IdName = treeEvent.NodeName + "|" + treeEvent.SenderId;
-            bigMessage.Append(Environment.NewLine + indent + "Knoten: " + IdName);
-            bigMessage.Append(", Logical: " + treeEvent.Logical);
+            bigMessage.Append(Environment.NewLine + indent + "Knoten: " + treeEvent.SenderId);
             bigMessage.Append(", Quelle: " + treeEvent.SourceId);
+            bigMessage.Append(", Logical: " + treeEvent.Logical);
             bigMessage.Append(Environment.NewLine + indent + treeEvent.ReplaceWildcards("%MachineName%")
                 + ", Thread: " + treeEvent.ThreadId.ToString());
             bigMessage.Append(", Tree: " + treeParameters.ToString());
