@@ -30,7 +30,7 @@ namespace TextFileLogger
         /// <param name="treeParameters">Für den gesamten Tree gültige Parameter oder null.</param>
         /// <param name="treeEvent">Objekt mit Informationen über das Ereignis.</param>
         /// <param name="additionalEventArgs">Enthält z.B. beim Event 'Exception' die zugehörige Exception.</param>
-        public void Log(object loggerParameters, TreeParameters treeParameters, TreeEvent treeEvent, object additionalEventArgs)
+        public void Log(object? loggerParameters, TreeParameters? treeParameters, TreeEvent treeEvent, object? additionalEventArgs)
         {
             // Setzen des Pfades zur Logdatei
             this.SetLogFilePath(loggerParameters, treeEvent);
@@ -43,6 +43,14 @@ namespace TextFileLogger
 
         #endregion INodeLogger implementation
 
+        /// <summary>
+        /// Konstruktor - setzt den Namen des Logfiles auf den Default: "TextFileLogger.txt".
+        /// </summary>
+        public TextFileLogger()
+        {
+            this._debugFile = "TextFileLogger.txt";
+        }
+
         #endregion public members
 
         #region private members
@@ -51,30 +59,32 @@ namespace TextFileLogger
 
         // Übernimmt entweder einen übergebenen, speziellen Pfad zu einer Logdatei
         // oder setzt den Default Pfad. Legt ggf. das Zielverzeichnis an.
-        private void SetLogFilePath(object loggerParameters, TreeEvent treeEvent)
+        private void SetLogFilePath(object? loggerParameters, TreeEvent treeEvent)
         {
-            if (loggerParameters != null)
+            string? paraString = loggerParameters?.ToString();
+            if (!String.IsNullOrEmpty(paraString))
             {
-                this._debugFile = loggerParameters.ToString();
+                this._debugFile = paraString;
             }
             else
             {
                 this._debugFile = treeEvent.ReplaceWildcards("%DebugFile%");
             }
-            if (!Directory.Exists(Path.GetDirectoryName(this._debugFile)))
+            string? debugFileDir = Path.GetDirectoryName(this._debugFile);
+            if (!String.IsNullOrEmpty(debugFileDir) && !Directory.Exists(debugFileDir))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(this._debugFile));
+                Directory.CreateDirectory(debugFileDir);
             }
         }
 
         // Baut aus den übergebenen Parametern einen einzigen formatierten string zusammen.
-        private string BuildLogMessage(TreeParameters treeParameters, TreeEvent treeEvent, object additionalEventArgs)
+        private string BuildLogMessage(TreeParameters? treeParameters, TreeEvent treeEvent, object? additionalEventArgs)
         {
             string indent = "        ";
             string addInfos = indent;
             if (treeEvent.Name.Contains("Exception"))
             {
-                addInfos += (additionalEventArgs as Exception).Message;
+                addInfos += ((Exception?)additionalEventArgs)?.Message;
             }
             if (treeEvent.Name.Contains("ProgressChanged"))
             {
@@ -88,7 +98,7 @@ namespace TextFileLogger
             bigMessage.Append(", Logical: " + treeEvent.Logical);
             bigMessage.Append(Environment.NewLine + indent + treeEvent.ReplaceWildcards("%MachineName%")
                 + ", Thread: " + treeEvent.ThreadId.ToString());
-            bigMessage.Append(", Tree: " + treeParameters.ToString());
+            bigMessage.Append(", Tree: " + treeParameters?.ToString()?? "unknown");
             if (addInfos.Trim() != "")
             {
                 bigMessage.Append(Environment.NewLine + addInfos);
