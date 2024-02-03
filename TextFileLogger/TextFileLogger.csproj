@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageId>NetEti.$(AssemblyName)</PackageId>
-    <Copyright>Copyright © $(Authors) 2013-2023</Copyright>
+    <Copyright>Copyright © $(Authors) 2013-$([System.DateTime]::Now.Year)</Copyright>
     <Title>$(AssemblyName) - Loggt Meldungen von Vishnu-Checkern in eine Textdatei</Title>
     <Description>$(AssemblyName) - Loggt Meldungen von Vishnu-Checkern in eine Textdatei</Description>
     <Authors>Erik Nagel</Authors>
